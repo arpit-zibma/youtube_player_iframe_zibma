@@ -36,7 +36,7 @@ String youtubeIFrameTag(YoutubePlayerController controller) {
   return '<iframe id="player" type="text/html"'
       ' style="position:absolute; top:0px; left:0px; bottom:0px; right:10px;'
       ' width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"'
-      ' src="$sourceUri" frameborder="0" allowfullscreen></iframe>';
+      ' src="$sourceUri" frameborder="0" allowfullscreen ></iframe>';
 }
 
 ///
@@ -120,8 +120,12 @@ function hideTopMenu() {
   try { document.querySelector('#player').contentDocument.querySelector('.ytp-chrome-top').style.display = 'none'; } catch(e) { }
   return '';
 }
+// function hidePauseOverlay() {
+//   try { document.querySelector('#player').contentDocument.querySelector('.ytp-pause-overlay').style.display = 'none'; } catch(e) { }
+//   return '';
+// }
 function hidePauseOverlay() {
-  try { document.querySelector('#player').contentDocument.querySelector('.ytp-pause-overlay').style.display = 'none'; } catch(e) { }
+  try { document.querySelector('#player').contentDocument.querySelector('.ytp-contextmenu').style.visibility = 'hidden'; } catch(e) { }
   return '';
 }
 ''';

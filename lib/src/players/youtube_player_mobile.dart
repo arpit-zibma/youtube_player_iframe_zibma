@@ -103,6 +103,10 @@ class _MobileYoutubePlayerState extends State<RawYoutubePlayer>
         encoding: 'utf-8',
         mimeType: 'text/html',
       ),
+      onLongPressHitTestResult: (controller, hitTestResult) {
+          print('controller ${controller.android}');
+          print('hitTestResult ${hitTestResult}');
+      },
       gestureRecognizers: widget.gestureRecognizers ??
           {
             Factory<VerticalDragGestureRecognizer>(
@@ -335,7 +339,6 @@ class _MobileYoutubePlayerState extends State<RawYoutubePlayer>
                     window.flutter_inappwebview.callHandler('VideoTime', player.getCurrentTime(), player.getVideoLoadedFraction());
                 }, 100);
             }
-
             $youtubeIFrameFunctions
         </script>
     </body>

@@ -5,6 +5,7 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -49,62 +50,59 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: '0Y_xhvk7_3I',
-      params: const YoutubePlayerParams(
-        showControls: true,
-        showFullscreenButton: true,
-        privacyEnhanced: true,
-        useHybridComposition: true,
+      initialVideoId: 'tcodrIK2P_I',
+      params: YoutubePlayerParams(
+        showVideoAnnotations: false,
       ),
     );
-    _controller.onEnterFullscreen = () {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-      log('Entered Fullscreen');
-    };
-    _controller.onExitFullscreen = () {
-      log('Exited Fullscreen');
-    };
+    _controller.listen((event) {
+      _controller
+        ..hideTopMenu()
+        ..hidePauseOverlay();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const player = YoutubePlayerIFrame();
-    return YoutubePlayerControllerProvider(
-      // Passing controller to widgets below.
-      controller: _controller,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Youtube Player IFrame'),
-        ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            if (kIsWeb && constraints.maxWidth > 800) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Expanded(child: player),
-                  const SizedBox(
-                    width: 500,
-                    child: SingleChildScrollView(
-                      child: Controls(),
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
+        return Stack(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: YoutubePlayerIFrame(
+                controller: _controller,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, top: 30),
+              child: Material(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                      size: 20,
                     ),
                   ),
-                ],
-              );
-            }
-            return ListView(
-              children: [
-                player,
-                const Controls(),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+                ),
+              ),
+            )
+          ],
+        );
+
   }
 
   @override
