@@ -279,6 +279,8 @@ class YoutubePlayerController extends Stream<YoutubePlayerValue>
   /// Might violates Youtube's TOS. Use at your own risk.
   void hidePauseOverlay() => invokeJavascript('hidePauseOverlay()');
 
+  void hideLongPressMenu() => invokeJavascript('hideLongPressMenu()');
+
   /// MetaData for the currently loaded or cued video.
   YoutubeMetaData get metadata => _value.metaData;
 

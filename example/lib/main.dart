@@ -58,6 +58,7 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
     _controller.listen((event) {
       _controller
         ..hideTopMenu()
+        ..hideLongPressMenu()
         ..hidePauseOverlay();
     });
   }
@@ -102,7 +103,6 @@ class _YoutubeAppDemoState extends State<YoutubeAppDemo> {
             )
           ],
         );
-
   }
 
   @override

@@ -120,11 +120,11 @@ function hideTopMenu() {
   try { document.querySelector('#player').contentDocument.querySelector('.ytp-chrome-top').style.display = 'none'; } catch(e) { }
   return '';
 }
-// function hidePauseOverlay() {
-//   try { document.querySelector('#player').contentDocument.querySelector('.ytp-pause-overlay').style.display = 'none'; } catch(e) { }
-//   return '';
-// }
 function hidePauseOverlay() {
+  try { document.querySelector('#player').contentDocument.querySelector('.ytp-pause-overlay').style.display = 'none'; } catch(e) { }
+  return '';
+}
+function hideLongPressMenu() {
   try { document.querySelector('#player').contentDocument.querySelector('.ytp-contextmenu').style.visibility = 'hidden'; } catch(e) { }
   return '';
 }
