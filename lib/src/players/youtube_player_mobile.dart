@@ -91,86 +91,88 @@ class _MobileYoutubePlayerState extends State<RawYoutubePlayer>
 
   @override
   Widget build(BuildContext context) {
-    return InAppWebView(
-      key: ValueKey(controller.hashCode),
-      initialData: InAppWebViewInitialData(
-        data: player,
-        baseUrl: Uri.parse(
-          controller.params.privacyEnhanced
-              ? 'https://www.youtube-nocookie.com'
-              : 'https://www.youtube.com',
+    return Center(
+      child: InAppWebView(
+        key: ValueKey(controller.hashCode),
+        initialData: InAppWebViewInitialData(
+          data: player,
+          baseUrl: Uri.parse(
+            controller.params.privacyEnhanced
+                ? 'https://www.youtube-nocookie.com'
+                : 'https://www.youtube.com',
+          ),
+          encoding: 'utf-8',
+          mimeType: 'text/html',
         ),
-        encoding: 'utf-8',
-        mimeType: 'text/html',
-      ),
-      onLongPressHitTestResult: (controller, hitTestResult) {
-          print('controller ${controller.android}');
-          print('hitTestResult ${hitTestResult}');
-      },
-      gestureRecognizers: widget.gestureRecognizers ??
-          {
-            Factory<VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer(),
-            ),
-            Factory<HorizontalDragGestureRecognizer>(
-              () => HorizontalDragGestureRecognizer(),
-            ),
-          },
-      initialOptions: InAppWebViewGroupOptions(
-        crossPlatform: InAppWebViewOptions(
-          userAgent: userAgent,
-          mediaPlaybackRequiresUserGesture: false,
-          transparentBackground: true,
-          disableContextMenu: true,
-          supportZoom: false,
-          disableHorizontalScroll: false,
-          disableVerticalScroll: false,
-          useShouldOverrideUrlLoading: true,
+        onLongPressHitTestResult: (controller, hitTestResult) {
+            print('controller ${controller.android}');
+            print('hitTestResult ${hitTestResult}');
+        },
+        gestureRecognizers: widget.gestureRecognizers ??
+            {
+              Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer(),
+              ),
+              Factory<HorizontalDragGestureRecognizer>(
+                () => HorizontalDragGestureRecognizer(),
+              ),
+            },
+        initialOptions: InAppWebViewGroupOptions(
+          crossPlatform: InAppWebViewOptions(
+            userAgent: userAgent,
+            mediaPlaybackRequiresUserGesture: false,
+            transparentBackground: true,
+            disableContextMenu: true,
+            supportZoom: false,
+            disableHorizontalScroll: false,
+            disableVerticalScroll: false,
+            useShouldOverrideUrlLoading: true,
+          ),
+          ios: IOSInAppWebViewOptions(
+            allowsInlineMediaPlayback: true,
+            allowsAirPlayForMediaPlayback: true,
+            allowsPictureInPictureMediaPlayback: true,
+          ),
+          android: AndroidInAppWebViewOptions(
+            useWideViewPort: false,
+            useHybridComposition: controller.params.useHybridComposition,
+          ),
         ),
-        ios: IOSInAppWebViewOptions(
-          allowsInlineMediaPlayback: true,
-          allowsAirPlayForMediaPlayback: true,
-          allowsPictureInPictureMediaPlayback: true,
-        ),
-        android: AndroidInAppWebViewOptions(
-          useWideViewPort: false,
-          useHybridComposition: controller.params.useHybridComposition,
-        ),
-      ),
-      shouldOverrideUrlLoading: (_, detail) async {
-        final uri = detail.request.url;
-        if (uri == null) return NavigationActionPolicy.CANCEL;
+        shouldOverrideUrlLoading: (_, detail) async {
+          final uri = detail.request.url;
+          if (uri == null) return NavigationActionPolicy.CANCEL;
 
-        final feature = uri.queryParameters['feature'];
-        if (feature == 'emb_rel_pause') {
-          if (uri.queryParameters.containsKey('v')) {
-            controller.load(uri.queryParameters['v']!);
+          final feature = uri.queryParameters['feature'];
+          if (feature == 'emb_rel_pause') {
+            if (uri.queryParameters.containsKey('v')) {
+              controller.load(uri.queryParameters['v']!);
+            }
+        //   } else {
+        //     url_launcher.launch(uri.toString());
           }
-      //   } else {
-      //     url_launcher.launch(uri.toString());
-        }
-        return NavigationActionPolicy.CANCEL;
-      },
-      onWebViewCreated: (webController) {
-        if (!_webController.isCompleted) {
-          _webController.complete(webController);
-        }
-        controller.invokeJavascript = _callMethod;
-        _addHandlers(webController);
-      },
-      onLoadStop: (_, __) {
-        _onLoadStopCalled = true;
-        if (_isPlayerReady) {
-          controller.add(
-            controller.value.copyWith(isReady: true),
-          );
-        }
-      },
-      onConsoleMessage: (_, message) {
-        log(message.message);
-      },
-      onEnterFullscreen: (_) => controller.onEnterFullscreen?.call(),
-      onExitFullscreen: (_) => controller.onExitFullscreen?.call(),
+          return NavigationActionPolicy.CANCEL;
+        },
+        onWebViewCreated: (webController) {
+          if (!_webController.isCompleted) {
+            _webController.complete(webController);
+          }
+          controller.invokeJavascript = _callMethod;
+          _addHandlers(webController);
+        },
+        onLoadStop: (_, __) {
+          _onLoadStopCalled = true;
+          if (_isPlayerReady) {
+            controller.add(
+              controller.value.copyWith(isReady: true),
+            );
+          }
+        },
+        onConsoleMessage: (_, message) {
+          log(message.message);
+        },
+        onEnterFullscreen: (_) => controller.onEnterFullscreen?.call(),
+        onExitFullscreen: (_) => controller.onExitFullscreen?.call(),
+      ),
     );
   }
 
